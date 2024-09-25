@@ -4,9 +4,36 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
+    <div id="main-container">
+        <h1>Rock, Paper, Sciccors Game</h1>
+        <div id="score-container">
+            <div class="left-column">
+                <p>🤖</p>
+                <p class="computer-score">0</p>
+            </div>
+            <div class="right-column">
+                <p>🙎‍♂️</p>
+                <p class="human-score">0</p>
+            </div>
+        </div>
+        <h1 id="results"></h1>
+        <div id="btn-container">
+            <button id="rock">✊</button>
+            <button id="paper">✋</button>
+            <button id="sciccors">✌</button>
+        </div>
+    </div>
     <script>
+        // Keep Tracks of the game Scores
+        let userScore = 0;
+        let compScore = 0;
+
+        const userScoreboard = document.querySelector('.human-score');
+        const compScoreboard = document.querySelector('.computer-score');
+
         const getComputerChoice = () => {
             let randNum = Math.floor(Math.random() * 3);
             switch(randNum) {
@@ -15,54 +42,51 @@
                 case 1:
                     return 'paper';
                 case 2:
-                    return 'scissors'; // Fix typo from 'sciccors'
+                    return 'scissors'; 
             }
         }
+        const result = document.querySelector('#results');
 
-        const getUserChoice = () => {
-            let userChoice;
-            do {
-                userChoice = window.prompt("Rock, Paper, Scissors?");
-                
-                // Check if user pressed Cancel
-                if (userChoice === null) {
-                    alert("You canceled the game.");
-                    return null; // Exit the function if user cancels
+        const playRound = (event) => {
+            let computerSelect = getComputerChoice();
+            let userSelect = event.target.id;
+            
+            if(userScore < 5 || compScore < 5){
+                if(userSelect === computerSelect) {
+                result.textContent = 'It`s a Tie'
+                } else if (
+                    (userSelect === 'rock' && computerSelect === 'scissors') ||
+                    (userSelect === 'paper' && computerSelect === 'rock') ||
+                    (userSelect === 'scissors' && computerSelect === 'paper')
+                ) {
+                    userScore++;
+                    result.textContent = 'You Win The Round';
+                } else {
+                    compScore++;
+                    result.textContent = 'You Lose The Round'
                 }
-
-                userChoice = userChoice.toLowerCase();
-            } while(userChoice !== "rock" && userChoice !== "paper" && userChoice !== "scissors")
-
-            return userChoice;
-        }
-
-        const playRound = (userSelect, computerSelect) => {
-            if(userSelect === computerSelect) {
-                console.log("It's a tie");
-            } else if (
-                (userSelect === 'rock' && computerSelect === 'scissors') ||
-                (userSelect === 'paper' && computerSelect === 'rock') ||
-                (userSelect === 'scissors' && computerSelect === 'paper')
-            ) {
-                console.log("YOU WIN!!");
-            } else {
-                console.log("YOU LOSE");
-            }
-        }
-
-        let index = 0; 
-        while(index < 5) {
-            let computerSelection = getComputerChoice();
-            let userSelection = getUserChoice();
-
-            // If the user cancels, break the loop
-            if (userSelection === null) {
-                break;
+                userScoreboard.textContent = userScore;
+                compScoreboard.textContent = compScore;
+                if(userScore == 5){
+                    result.textContent = 'You Won The Game';
+                    userScore = 0;
+                    compScore = 0;
+                }else if(compScore == 5){
+                    result.textContent = 'The Computer Won';
+                    userScore = 0;
+                    compScore = 0;
+                }
+                return;
             }
 
-            playRound(userSelection, computerSelection);
-            index++;
+            
+            
         }
+
+        const selectBtn = document.querySelector('#btn-container');
+        selectBtn.addEventListener('click', (event) => playRound(event));
+
+
     </script>
 </body>
 </html>
